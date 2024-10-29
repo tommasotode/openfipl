@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Detail View</title>
+  </head>
+  <body>
+      {% for tab in athlete %}
+          <li>{{ tab.Name }} {{ tab.TotalKg }} {{ tab.Date }}</li>
+          <br>
+      {% endfor %}
+
+    <div style="text-align: center;">
+      <a href="/">Back to Table</a>
+    </div>
+  </body>
+</html>
