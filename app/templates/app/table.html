@@ -1,32 +1,49 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Table</title>
     <style>
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 25px 0;
-            font-size: 18px;
-            text-align: left;
+        }
+        table, th, td {
+            border: 1px solid black;
         }
         th, td {
-            padding: 12px;
-            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
         }
         th {
             background-color: #f2f2f2;
         }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        tr:hover {
-            background-color: #f1f1f1;
-        }
     </style>
 </head>
 <body>
-    <div class="table-container">
-        {{ table|safe }}
-    </div>
+    <h1>Data Table</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Sex</th>
+                <th>TotalKg</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in table %}
+                <tr>
+                    <td>
+                        <a href="athlete/{{ entry.Name }}"> {{ entry.Name }} </a>
+                    </td>
+                    <td>{{ entry.Sex }}</td>
+                    <td>{{ entry.TotalKg }}</td>
+                    <td>{{ entry.Date }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </body>
 </html>

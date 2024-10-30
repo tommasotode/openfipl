@@ -1,29 +1,14 @@
-from django.http import HttpResponse
 from django.shortcuts import render
-
-import pandas as pd
+from app.models import Athletes
 
 def display_table(request):
-    df = pd.read_csv("openipf-2024-10-26/openipf-2024-10-26-469a3a20.csv")
-    df = df[df["Federation"]=="FIPL"]
-    df = df[df["Date"]>"2000-0-0"]
-    df = df[:100]
-    df = df[["Name", "Date", "Sex", "TotalKg"]]
 
-    df['Name'] = df.apply(lambda row: f'<a href="/athlete/{row["Name"]}/">{row["Name"]}</a>', axis=1)
+    table = Athletes.objects.filter(Federation="IPF").values("Name", "Sex", "TotalKg", "Date")[:1000]
 
-    html_table = df.to_html(index=False, escape=False)
-
-    return render(request, "app/table.html", {"table": html_table})
+    return render(request, "app/table.html", {"table": table})
 
 
-def athlete_view(request, name):
-    df = pd.read_csv("openipf-2024-10-26/openipf-2024-10-26-469a3a20.csv")
-    athlete = df[df["Name"] == name]
-
-    if athlete.empty:
-        return HttpResponse("No data found for this entry.")
-
-    athlete = athlete.to_dict(orient="records")
+def athlete_view(request, name):    
+    athlete = Athletes.objects.filter(Name=name)
 
     return render(request, "app/athlete.html", {"athlete": athlete})

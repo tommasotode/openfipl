@@ -5,7 +5,9 @@
   </head>
   <body>
       {% for tab in athlete %}
-          <li>{{ tab.Name }} {{ tab.TotalKg }} {{ tab.Date }}</li>
+          <li>
+            {{ tab.Name }} {{ tab.TotalKg }} {{ tab.Date }} {{ tab.Federation }}
+          </li>
           <br>
       {% endfor %}
 
