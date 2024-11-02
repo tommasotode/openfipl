@@ -4,15 +4,15 @@
     <title>Athlete View</title>
   </head>
   <body>
-      {% for tab in athlete %}
-          <li>
-            {{ tab.Name }} {{ tab.TotalKg }} {{ tab.Date }} {{ tab.Federation }}
-          </li>
-          <br>
-      {% endfor %}
+    <h1>{{ athlete.0.Name }}</h1>
+    
+    {% for tab in athlete %}
+      <li>{{ tab.Name }} {{ tab.TotalKg }} {{ tab.Date }} {{ tab.Federation }}</li>
+      <br />
+    {% endfor %}
 
     <div style="text-align: center;">
-      <a href="/">Back to Table</a>
+      <a href="/">Back</a>
     </div>
   </body>
 </html>

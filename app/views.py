@@ -12,3 +12,6 @@ def athlete_view(request, name):
     athlete = Athletes.objects.filter(Name=name)
 
     return render(request, "app/athlete.html", {"athlete": athlete})
+
+def chart_test(request):
+    return render(request, "app/chart_test.html")
