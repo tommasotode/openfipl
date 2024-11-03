@@ -20,7 +20,7 @@
       const labels = [];
       const data = [];
       {% for comp in athlete %}
-        labels.push(new Date(Date.parse("{{ comp.Date }}")));
+        labels.push(new Date("{{ comp.Date }}"));
         data.push({{ comp.TotalKg }});
       {% endfor %}
 
