@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Best Scores Frequency Chart</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Frequency of Best Totals for each athlete</h1>
-    <canvas id="normal"></canvas>
+    <canvas id="normal" width="300" height="120"></canvas>
 
     <script>
         const total = {{ total | safe }};
@@ -18,12 +18,10 @@
             type: 'bar',
             data: {
                 labels: total,
-                datasets: [{
+                datasets: [
+                {
                     label: 'Frequency',
                     data: frequency,
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1
                 }]
             },
             options: {
@@ -35,5 +33,5 @@
             }
         });
     </script>
-</body>
+  </body>
 </html>
