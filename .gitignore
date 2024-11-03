@@ -162,3 +162,4 @@ cython_debug/
 #.idea/
 
 openipf-2024-10-26
+.vscode
