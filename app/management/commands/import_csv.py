@@ -5,21 +5,32 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from app.models import Competition
 
+
 def get_float(field):
     res = field
     try:
-        res = float(res)
+        res = float(field)
     except:
         res = 0.0
-    return res
+
+    if pd.isna(res) or res is None:
+        return 0.0
+    else:
+        return res
+
 
 def get_int(field):
     res = field
     try:
-        res = int(res)
+        res = int(field)
     except:
         res = 0
-    return res
+
+    if pd.isna(res) or res is None:
+        return 0
+    else:
+        return res
+
 
 class Command(BaseCommand):
     help = "Download and import the CSV dataset in the SQLite database"
@@ -56,7 +67,7 @@ class Command(BaseCommand):
                 Country=row["Country"],
                 Federation=row["Federation"],
                 Date=row["Date"],
-                MeetName=row["MeetName"]
+                MeetName=row["MeetName"],
             )
             for _, row in df.iterrows()
         ]
