@@ -14,21 +14,25 @@ def display_table(request):
 
 
 def athlete_view(request, name):
-    athlete = Competition.objects.filter(Name=name)
+    athlete = Competition.objects.filter(Name=name).filter(Event="SBD")
 
     return render(request, "app/athlete.html", {"athlete": athlete})
 
 
 def distribution(request):
-    grouped_best = (
+    athlete_best = (
         Competition.objects.filter(Event="SBD")
+        .filter(Equipment="Raw")
+        .filter(Sex="M")
         .values("Name")
         .annotate(best_total=Max("TotalKg"))
     )
 
-    best = [entry["best_total"] for entry in grouped_best if entry["best_total"] > 0]
+    best = [entry["best_total"] for entry in athlete_best if entry["best_total"] > 0]
     best.sort()
-    total_frequency = Counter(best)
+
+    grouped_best = [5 * (total // 5) for total in best]
+    total_frequency = Counter(grouped_best)
 
     total = list(total_frequency.keys())
     freq = list(total_frequency.values())
