@@ -25,13 +25,13 @@ def distribution(request):
         .filter(Equipment="Raw")
         .filter(Sex="M")
         .values("Name")
-        .annotate(best_total=Max("TotalKg"))
+        .annotate(best_total=Max("IPFGLPoints"))
     )
 
     best = [entry["best_total"] for entry in athlete_best if entry["best_total"] > 0]
     best.sort()
 
-    grouped_best = [5 * (total // 5) for total in best]
+    grouped_best = [0.5 * (total // 0.5) for total in best]
     total_frequency = Counter(grouped_best)
 
     total = list(total_frequency.keys())
