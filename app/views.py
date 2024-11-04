@@ -6,7 +6,7 @@ from collections import Counter
 
 
 def display_table(request):
-    table = Competition.objects.filter(Federation="IPF").values(
+    table = Competition.objects.filter(Event="SBD").filter(Federation="FIPL").values(
         "Name", "Sex", "TotalKg", "Date"
     )[:1000]
 

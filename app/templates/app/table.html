@@ -3,49 +3,35 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <style>
-      table {
-        width: 100%;
-        border-collapse: collapse;
-      }
-      table,
-      th,
-      td {
-        border: 1px solid black;
-      }
-      th,
-      td {
-        padding: 10px;
-        text-align: left;
-      }
-      th {
-        background-color: #f2f2f2;
-      }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body>
-    <h1>Atleti</h1>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Sex</th>
-          <th>TotalKg</th>
-          <th>Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for entry in table %}
-          <tr>
-            <td>
-              <a href="athlete/{{ entry.Name }}">{{ entry.Name }}</a>
-            </td>
-            <td>{{ entry.Sex }}</td>
-            <td>{{ entry.TotalKg }}</td>
-            <td>{{ entry.Date }}</td>
+  <body class="bg-gray-100 p-4">
+    <h1 class="text-3xl font-semibold mb-4 text-center">Atleti</h1>
+
+    <div class="overflow-x-auto">
+      <table class="table w-full bg-white rounded-lg shadow-md border border-gray-200">
+        <thead>
+          <tr class="bg-gray-200 text-gray-700">
+            <th class="p-3 text-left">Name</th>
+            <th class="p-3 text-left">Sex</th>
+            <th class="p-3 text-left">TotalKg</th>
+            <th class="p-3 text-left">Date</th>
           </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {% for entry in table %}
+            <tr class="hover:bg-gray-50">
+              <td class="p-3">
+                <a href="athlete/{{ entry.Name }}" class="text-blue-600 hover:text-blue-800">{{ entry.Name }}</a>
+              </td>
+              <td class="p-3">{{ entry.Sex }}</td>
+              <td class="p-3">{{ entry.TotalKg }}</td>
+              <td class="p-3">{{ entry.Date }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   </body>
 </html>

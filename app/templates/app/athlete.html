@@ -1,21 +1,39 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Athlete View</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
-  <body>
-    <h1>{{ athlete.0.Name }}</h1>
+  <body class="bg-gray-100 p-6">
+    <div class="max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-6">
+      <h1 class="text-3xl font-bold text-center mb-6">{{ athlete.0.Name }}</h1>
 
-    {% for comp in athlete %}
-      <li>{{ comp.Name }} {{ comp.TotalKg }} {{ comp.Date }} {{ comp.Federation }}</li>
-      <br />
-    {% endfor %}
+      <ul class="mb-6">
+        {% for comp in athlete %}
+          <li class="text-lg p-2 bg-gray-50 rounded-lg mb-2">
+            <span class="font-semibold">{{ comp.Name }}</span> -
+            <span>{{ comp.TotalKg }} kg</span> on
+            <span>{{ comp.Date }}</span>
+            <span>{{ comp.Federation }}</span>
+          </li>
+        {% endfor %}
+      </ul>
 
-    <canvas id="test" width="300" height="100"></canvas>
+      <div class="mb-6">
+        <canvas id="test" width="400" height="200"></canvas>
+      </div>
+
+      <div class="text-center mt-6">
+        <a href="/" class="btn btn-primary">Back</a>
+      </div>
+    </div>
 
     <script>
-      const canvas = document.getElementById('test').getContext('2d')
+      const canvas = document.getElementById('test').getContext('2d');
 
       const labels = [];
       const data = [];
@@ -23,7 +41,6 @@
         labels.push(new Date("{{ comp.Date }}"));
         data.push({{ comp.TotalKg }});
       {% endfor %}
-
 
       let pair = labels.map((date, index) => {
         return { date: date, total: data[index] };
@@ -39,15 +56,22 @@
           datasets: [
             {
               label: 'TotalKg',
-              data: totals
+              data: totals,
+              borderColor: '#3B82F6',
+              backgroundColor: 'rgba(59, 130, 246, 0.2)',
+              tension: 0.2,
+              fill: true,
             }
           ]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            x: { title: { display: true, text: 'Date' }},
+            y: { title: { display: true, text: 'TotalKg' }}
+          }
         }
-      })
+      });
     </script>
-
-    <div style="text-align: center;">
-      <a href="/">Back</a>
-    </div>
   </body>
 </html>
