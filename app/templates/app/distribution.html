@@ -2,11 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Best Scores Frequency Chart</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
-    <h1>Frequency of Best Totals for each athlete</h1>
     <canvas id="normal" width="300" height="120"></canvas>
 
     <script>
@@ -23,13 +21,6 @@
                     label: 'Frequency',
                     data: frequency,
                 }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
             }
         });
     </script>

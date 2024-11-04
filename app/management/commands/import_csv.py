@@ -5,6 +5,8 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from app.models import Competition
 
+from tqdm import tqdm
+
 
 def get_float(field):
     res = field
@@ -32,6 +34,12 @@ def get_int(field):
         return res
 
 
+def get_name(name):
+    res = name.replace("#", "")
+
+    return res
+
+
 class Command(BaseCommand):
     help = "Download and import the CSV dataset in the SQLite database"
 
@@ -50,7 +58,7 @@ class Command(BaseCommand):
         df = pd.read_csv(path)
         instances = [
             Competition(
-                Name=row["Name"],
+                Name=get_name(row["Name"]),
                 Sex=row["Sex"],
                 Event=row["Event"],
                 Equipment=row["Equipment"],
@@ -69,7 +77,7 @@ class Command(BaseCommand):
                 Date=row["Date"],
                 MeetName=row["MeetName"],
             )
-            for _, row in df.iterrows()
+            for _, row in tqdm(df.iterrows())
         ]
 
         try:
