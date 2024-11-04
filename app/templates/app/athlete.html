@@ -8,13 +8,14 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
+  
   <body class="bg-gray-100 p-6">
-    <div class="max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-6">
+    <div class="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-6">
       <h1 class="text-3xl font-bold text-center mb-6">{{ athlete.0.Name }}</h1>
 
       <ul class="mb-6">
         {% for comp in athlete %}
-          <li class="text-lg p-2 bg-gray-50 rounded-lg mb-2">
+          <li class="text-lg p-2 bg-gray-50 mb-2 text-center">
             <span class="font-semibold">{{ comp.Name }}</span> -
             <span>{{ comp.TotalKg }} kg</span> on
             <span>{{ comp.Date }}</span>
@@ -24,7 +25,7 @@
       </ul>
 
       <div class="mb-6">
-        <canvas id="test" width="400" height="200"></canvas>
+        <canvas id="chart" width="400" height="200"></canvas>
       </div>
 
       <div class="text-center mt-6">
@@ -33,7 +34,7 @@
     </div>
 
     <script>
-      const canvas = document.getElementById('test').getContext('2d');
+      const canvas = document.getElementById('chart').getContext('2d');
 
       const labels = [];
       const data = [];
