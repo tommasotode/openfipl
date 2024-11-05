@@ -6,17 +6,52 @@ from collections import Counter
 
 
 def display_table(request):
-    table = Competition.objects.filter(Event="SBD").filter(Federation="FIPL").values(
-        "Name", "Sex", "TotalKg", "Date"
-    )[2000:3000]
+    table = (
+        Competition.objects.filter(Event="SBD")
+        .filter(Federation="FIPL")
+        .filter(Equipment="Raw")
+        .values("Name", "Sex", "TotalKg", "Date")[2000:3000]
+    )
 
     return render(request, "app/table.html", {"table": table})
 
 
 def athlete_view(request, name):
-    athlete = Competition.objects.filter(Name=name).filter(Event="SBD").filter(Equipment="Raw")
+    athlete = (
+        Competition.objects.filter(Name=name)
+        .filter(Event="SBD")
+        .filter(Equipment="Raw")
+    )
+    pr = athlete.aggregate(max_points=Max("IPFGLPoints"))["max_points"]
 
-    return render(request, "app/athlete.html", {"athlete": athlete})
+    prs = (
+        Competition.objects.filter(Event="SBD")
+        .filter(Equipment="Raw")
+        .filter(Sex="M")
+        .values("Name")
+        .annotate(best_total=Max("IPFGLPoints"))
+    )
+    best = [entry["best_total"] for entry in prs if entry["best_total"] > 0]
+    best.sort()
+
+    chunk = 1
+    best_chunks = [chunk * (total // chunk) for total in best]
+    freq = Counter(best_chunks)
+    total = list(freq.keys())
+    freq = list(freq.values())
+    avg = sum(best) / len(best) if best else 0
+    avg_chunk = chunk * round(avg / chunk)
+    pr_chunk = chunk * round(pr / chunk)
+
+    res = {
+        "athlete": athlete,
+        "dist_total": total,
+        "dist_frequency": freq,
+        "dist_average": avg_chunk,
+        "dist_pr": pr_chunk,
+    }
+
+    return render(request, "app/athlete.html", res)
 
 
 def distribution(request):
@@ -47,7 +82,7 @@ def distribution(request):
         "total": total,
         "frequency": freq,
         "average": avg_chunk,
-        "result": res_chunk
-        }
+        "result": res_chunk,
+    }
 
     return render(request, "app/distribution.html", plot)

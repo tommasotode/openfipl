@@ -74,5 +74,48 @@
         }
       });
     </script>
+
+
+    <canvas id="normal" width="300" height="120"></canvas>
+    <script>
+        const total = {{ dist_total | safe }};
+        const frequency = {{ dist_frequency | safe }};
+        const average = {{ dist_average | safe }};
+        const pr = {{ dist_pr | safe }};
+
+        const background = total.map((value) => {
+          if (value === average) {
+              return 'rgba(55, 130, 235, 0.7)';
+          } else if (value === pr) {
+              return 'rgba(220, 10, 210, 0.7)';
+          } else {
+              return 'rgba(75, 192, 192, 0.7)';
+          } });
+
+        const border = total.map((value) => {
+          if (value === average) {
+              return 'rgba(55, 130, 235, 1)';
+          } else if (value === pr) {
+              return 'rgba(220, 10, 210, 1)';
+          } else {
+              return 'rgba(75, 192, 192, 1)';
+          } });
+
+        const ctx = document.getElementById('normal').getContext('2d');
+        const normal = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: total,
+                datasets: [
+                {
+                    label: 'Frequency',
+                    data: frequency,
+                    backgroundColor: background,
+                    borderColor: border,
+                    borderWidth: 1
+                }]
+            }
+        });
+    </script>
   </body>
 </html>
