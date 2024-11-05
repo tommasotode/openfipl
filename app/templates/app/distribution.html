@@ -10,6 +10,26 @@
     <script>
         const total = {{ total | safe }};
         const frequency = {{ frequency | safe }};
+        const average = {{ average | safe }};
+        const result = {{ result | safe }};
+
+        const background = total.map((value) => {
+          if (value === average) {
+              return 'rgba(55, 130, 235, 0.7)';
+          } else if (value === result) {
+              return 'rgba(220, 10, 210, 0.7)';
+          } else {
+              return 'rgba(75, 192, 192, 0.7)';
+          } });
+
+        const border = total.map((value) => {
+          if (value === average) {
+              return 'rgba(55, 130, 235, 1)';
+          } else if (value === result) {
+              return 'rgba(220, 10, 210, 1)';
+          } else {
+              return 'rgba(75, 192, 192, 1)';
+          } });
 
         const ctx = document.getElementById('normal').getContext('2d');
         const normal = new Chart(ctx, {
@@ -20,6 +40,9 @@
                 {
                     label: 'Frequency',
                     data: frequency,
+                    backgroundColor: background,
+                    borderColor: border,
+                    borderWidth: 1
                 }]
             }
         });

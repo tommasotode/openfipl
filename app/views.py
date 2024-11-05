@@ -14,7 +14,7 @@ def display_table(request):
 
 
 def athlete_view(request, name):
-    athlete = Competition.objects.filter(Name=name).filter(Event="SBD")
+    athlete = Competition.objects.filter(Name=name).filter(Event="SBD").filter(Equipment="Raw")
 
     return render(request, "app/athlete.html", {"athlete": athlete})
 
@@ -27,16 +27,27 @@ def distribution(request):
         .values("Name")
         .annotate(best_total=Max("IPFGLPoints"))
     )
-
     best = [entry["best_total"] for entry in athlete_best if entry["best_total"] > 0]
     best.sort()
 
-    grouped_best = [0.5 * (total // 0.5) for total in best]
-    total_frequency = Counter(grouped_best)
+    chunk = 1
 
-    total = list(total_frequency.keys())
-    freq = list(total_frequency.values())
+    best_chunks = [chunk * (total // chunk) for total in best]
+    freq = Counter(best_chunks)
+    total = list(freq.keys())
+    freq = list(freq.values())
 
-    plot = {"total": total, "frequency": freq}
+    avg = sum(best) / len(best) if best else 0
+    avg_chunk = chunk * round(avg / chunk)
+
+    res = 80
+    res_chunk = chunk * round(res / chunk)
+
+    plot = {
+        "total": total,
+        "frequency": freq,
+        "average": avg_chunk,
+        "result": res_chunk
+        }
 
     return render(request, "app/distribution.html", plot)
