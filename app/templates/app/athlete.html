@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Athlete View</title>
+
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.tailwindcss.com"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
-  
+
   <body class="bg-gray-100 p-6">
     <div class="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-6">
       <h1 class="text-3xl font-bold text-center mb-6">{{ athlete.0.Name }}</h1>
@@ -25,7 +25,11 @@
       </ul>
 
       <div class="mb-6">
-        <canvas id="chart" width="400" height="200"></canvas>
+        <canvas id="competitions" width="400" height="200"></canvas>
+      </div>
+
+      <div class="mb-6">
+        <canvas id="distribution" width="300" height="120"></canvas>
       </div>
 
       <div class="text-center mt-6">
@@ -34,8 +38,9 @@
     </div>
 
     <script>
-      const canvas = document.getElementById('chart').getContext('2d');
+      const competitions = document.getElementById('competitions').getContext('2d');
 
+      // TODO: Sort from python
       const labels = [];
       const data = [];
       {% for comp in athlete %}
@@ -50,7 +55,7 @@
       let dates = pair.map(item => item.date.toISOString().slice(0,10));
       let totals = pair.map(item => item.total);
 
-      const competitions = new Chart(canvas, {
+      new Chart(competitions, {
         type: 'line',
         data: {
           labels: dates,
@@ -75,9 +80,9 @@
       });
     </script>
 
-
-    <canvas id="normal" width="300" height="120"></canvas>
     <script>
+        const distribution = document.getElementById('distribution').getContext('2d');
+
         const total = {{ dist_total | safe }};
         const frequency = {{ dist_frequency | safe }};
         const average = {{ dist_average | safe }};
@@ -101,8 +106,7 @@
               return 'rgba(75, 192, 192, 1)';
           } });
 
-        const ctx = document.getElementById('normal').getContext('2d');
-        const normal = new Chart(ctx, {
+        new Chart(distribution, {
             type: 'bar',
             data: {
                 labels: total,
