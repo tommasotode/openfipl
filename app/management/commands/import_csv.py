@@ -5,9 +5,12 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from app.models import Competition
 
+import requests
+import zipfile
 from tqdm import tqdm
 
 
+# TODO: Make parser for each field
 def get_float(field):
     res = field
     try:
@@ -41,20 +44,41 @@ def get_name(name):
 
 
 class Command(BaseCommand):
-    help = "Download and import the CSV dataset in the SQLite database"
+    def download_csv(self, url: str, directory: str) -> str:
+        tmp_path = "temp.zip"
 
-    def add_arguments(self, parser):
-        parser.add_argument("csv_file", type=str, help="Path of the CSV file")
+        self.stdout.write(self.style.NOTICE("Downloading dataset..."))
+        res = requests.get(url)
+        res.raise_for_status()
+        with open(tmp_path, "wb") as file:
+            file.write(res.content)
+
+        print("Extracting dataset...")
+        os.makedirs(directory, exist_ok=True)
+        with zipfile.ZipFile(tmp_path, "r") as z:
+            z.extractall(directory)
+
+        os.remove(tmp_path)
+        for root, _, files in os.walk(directory):
+            for file in files:
+                if file.endswith(".csv"):
+                    old = os.path.join(root, file)
+                    new = os.path.join(directory, "dataset.csv")
+                    os.replace(old, new)
+
+        return new
 
     def handle(self, *args, **options):
-        path = options["csv_file"]
+        path = self.download_csv(
+            "https://openpowerlifting.gitlab.io/opl-csv/files/openipf-latest.zip",
+            "dataset",
+        )
 
         if not os.path.exists(path):
             self.stdout.write(self.style.ERROR(f"Cannot open '{path}'"))
             return
 
-        self.stdout.write(self.style.NOTICE(f"Importing {path} to db.sqlite3"))
-
+        self.stdout.write(self.style.NOTICE("Reading dataset..."))
         df = pd.read_csv(path)
         instances = [
             Competition(
@@ -80,7 +104,9 @@ class Command(BaseCommand):
             for _, row in tqdm(df.iterrows())
         ]
 
+        self.stdout.write(self.style.NOTICE("Importing dataset to db.sqlite3..."))
         try:
+            Competition.objects.all().delete()
             with transaction.atomic():
                 Competition.objects.bulk_create(instances, batch_size=1000)
             self.stdout.write(self.style.SUCCESS("Finished :-)"))
