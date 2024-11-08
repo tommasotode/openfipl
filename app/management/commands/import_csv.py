@@ -53,7 +53,7 @@ class Command(BaseCommand):
         with open(tmp_path, "wb") as file:
             file.write(res.content)
 
-        print("Extracting dataset...")
+        self.stdout.write(self.style.NOTICE("Extracting dataset..."))
         os.makedirs(directory, exist_ok=True)
         with zipfile.ZipFile(tmp_path, "r") as z:
             z.extractall(directory)
