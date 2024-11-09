@@ -4,16 +4,13 @@ from django.db.models import Max
 
 from collections import Counter
 
-
+# TODO: not sure if this is the best method to get the strongest lift
+# maybe it's better to only take data from the same weight class
 def get_best_lift(name):
     pr = (
         Competition.objects.filter(Name=name, Event="SBD", Equipment="Raw")
         .aggregate(s=Max("BestSquatKg"), b=Max("BestBenchKg"), d=Max("BestDeadliftKg"))
     )
-
-    s = pr["s"]
-    b = pr["b"]
-    d = pr["d"]
     prs = (
         Competition.objects.filter(Event="SBD", Equipment="Raw")
         .values("Name")
@@ -23,16 +20,19 @@ def get_best_lift(name):
     bench = sorted([p["b"] for p in prs if p["b"] >= 20])
     deadlift = sorted([p["d"] for p in prs if p["d"] >= 20])
 
+    high = {
+        sum(1 for lift in squat if pr["s"] < lift): "squat",
+        sum(1 for lift in bench if pr["b"] < lift): "bench",
+        sum(1 for lift in deadlift if pr["d"] < lift): "deadlift"
+    }
 
-    high = sum(1 for p in squat if s <= p)
-    percentile = (high / len(squat)) * 100
+    best = high[min(high.keys())]
+    worst = high[max(high.keys())]
 
-    return percentile
+    return (best, worst)
 
 
-def display_table(request):
-    get_best_lift("Matteo Marzolla")
-
+def table_view(request):
     table = (
         Competition.objects.filter(Event="SBD", Equipment="Raw", Federation="FIPL")
         .values("Name", "Sex", "TotalKg", "IPFGLPoints", "Date")
@@ -60,11 +60,15 @@ def athlete_view(request, name):
     avg_chunk = block * round(avg / block)
     pr_chunk = block * round(pr / block)
 
-    high = sum(1 for p in best if pr <= p)
+    high = sum(1 for p in best if pr < p)
     percentile = (high / len(best)) * 100
+
+    best_lift = get_best_lift(name)
 
     res = {
         "athlete": athlete,
+        "best" : best_lift[0],
+        "worst" : best_lift[1],
         "percentile": percentile,
         "dist_points": list(freq.keys()),
         "dist_freq": list(freq.values()),
