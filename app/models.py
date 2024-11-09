@@ -19,3 +19,6 @@ class Competition(models.Model):
     Federation = models.CharField(max_length=32)
     Date = models.CharField(max_length=16)
     MeetName = models.CharField(max_length=128)
+
+    def __str__(self):
+        return f"{self.Name} {self.IPFGLPoints}"

@@ -32,6 +32,10 @@
         <canvas id="distribution" width="300" height="120"></canvas>
       </div>
 
+      <div class="mb-6">
+        <h1 class="text-center">Top {{ percentile | safe }}%</h1>
+      </div>
+
       <div class="text-center mt-6">
         <a href="/" class="btn btn-primary">Back</a>
       </div>
@@ -83,12 +87,12 @@
     <script>
         const distribution = document.getElementById('distribution').getContext('2d');
 
-        const total = {{ dist_total | safe }};
-        const frequency = {{ dist_frequency | safe }};
-        const average = {{ dist_average | safe }};
+        const total = {{ dist_points | safe }};
+        const frequency = {{ dist_freq | safe }};
+        const average = {{ dist_avg | safe }};
         const pr = {{ dist_pr | safe }};
 
-        const background = total.map((value) => {
+        const bg_colors = total.map((value) => {
           if (value === average) {
               return 'rgba(55, 130, 235, 0.7)';
           } else if (value === pr) {
@@ -97,7 +101,7 @@
               return 'rgba(75, 192, 192, 0.7)';
           } });
 
-        const border = total.map((value) => {
+        const bord_colors = total.map((value) => {
           if (value === average) {
               return 'rgba(55, 130, 235, 1)';
           } else if (value === pr) {
@@ -114,9 +118,9 @@
                 {
                     label: 'Frequency',
                     data: frequency,
-                    backgroundColor: background,
-                    borderColor: border,
-                    borderWidth: 1
+                    backgroundColor: bg_colors,
+                    borderColor: bord_colors,
+                    borderWidth: 1,
                 }]
             }
         });
