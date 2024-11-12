@@ -3,9 +3,8 @@ from django.shortcuts import render
 from django.db.models import Max
 
 from collections import Counter
+from bisect import bisect_left
 
-# TODO: not sure if this is the best method to get the strongest lift
-# maybe it's better to only take data from the same weight class
 def get_best_lift(name):
     pr = (
         Competition.objects.filter(Name=name, Event="SBD", Equipment="Raw")
@@ -16,14 +15,18 @@ def get_best_lift(name):
         .values("Name")
         .annotate(s=Max("BestSquatKg"), b=Max("BestBenchKg"), d=Max("BestDeadliftKg"))
     )
-    squat = sorted([p["s"] for p in prs if p["s"] >= 20])
-    bench = sorted([p["b"] for p in prs if p["b"] >= 20])
-    deadlift = sorted([p["d"] for p in prs if p["d"] >= 20])
+    squat = sorted(p['s'] for p in prs if p['s'] >= 20)
+    bench = sorted(p['b'] for p in prs if p['b'] >= 20)
+    deadlift = sorted(p['d'] for p in prs if p['d'] >= 20)
+
+    srank = len(squat) - bisect_left(squat, pr['s'])
+    brank = len(bench) - bisect_left(bench, pr['b'])
+    drank = len(deadlift) - bisect_left(deadlift, pr['d'])
 
     high = {
-        sum(1 for lift in squat if pr["s"] < lift): "squat",
-        sum(1 for lift in bench if pr["b"] < lift): "bench",
-        sum(1 for lift in deadlift if pr["d"] < lift): "deadlift"
+        (srank / len(squat)): "squat",
+        (brank / len(bench)): "bench",
+        (drank / len(deadlift)): "deadlift"
     }
 
     best = high[min(high.keys())]
