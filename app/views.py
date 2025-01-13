@@ -19,7 +19,7 @@ def get_best_lift(name):
 
     bench = list(
         Competition.objects.filter(Event="SBD", Equipment="Raw")
-        .order_by("BestBenchKg")
+        .order_by("-BestBenchKg")
         .values_list("BestBenchKg", flat=True)
     )
 
