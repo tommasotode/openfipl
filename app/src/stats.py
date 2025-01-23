@@ -78,7 +78,7 @@ def get_ipfgl_distribution(block=1):
 
 @benchmark
 def get_athlete(name):
-    athlete = Performance.objects.filter(Name=name, Event="SBD", Equipment="Raw")
+    athlete = Performance.objects.filter(Name=name, Event="SBD", Equipment="Raw").order_by("Date")
     return athlete
 
 

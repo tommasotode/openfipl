@@ -5,14 +5,14 @@
 
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.tailwindcss.com"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
 
   <body class="bg-gray-100 p-6">
     <div class="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-6">
-      <h1 class="text-3xl font-bold text-center mb-6">{{ athlete_comps.0.Name }}</h1>
 
+      <!-- Athlete Competitions list -->
+      <h1 class="text-3xl font-bold text-center mb-6">{{ athlete_comps.0.Name }}</h1>
       <ul class="mb-6">
         {% for comp in athlete_comps %}
           <li class="text-lg p-2 bg-gray-50 mb-2 text-center">
@@ -24,18 +24,22 @@
         {% endfor %}
       </ul>
 
+      <!-- Competitions timeline chart -->
       <div class="mb-6">
-        <canvas id="competitions" width="400" height="200"></canvas>
+        <canvas id="comps_timeline" width="400" height="200"></canvas>
       </div>
 
+      <!-- IPF Points distribution chart -->
       <div class="mb-6">
         <canvas id="distribution" width="300" height="120"></canvas>
       </div>
 
+      <!-- Strength percentile -->
       <div class="mb-6">
         <h1 class="text-center">Top {{ percentile | safe }}%</h1>
       </div>
 
+      <!-- Best and worst lifts -->
       <div class="mb-6">
         <h1 class="text-center">Best lift: {{ best_lift | safe }}</h1>
         <h1 class="text-center">Worst lift: {{ worst_lift | safe }}</h1>
@@ -46,10 +50,10 @@
       </div>
     </div>
 
+    <!-- Competition timeline chart -->
     <script>
-      const competitions = document.getElementById('competitions').getContext('2d');
+      const comps_timeline = document.getElementById('comps_timeline').getContext('2d');
 
-      // TODO: Sort from python
       const labels = [];
       const data = [];
       {% for comp in athlete_comps %}
@@ -60,11 +64,10 @@
       let pair = labels.map((date, index) => {
         return { date: date, total: data[index] };
       });
-      pair.sort((a, b) => a.date - b.date);
       let dates = pair.map(item => item.date.toISOString().slice(0,10));
       let totals = pair.map(item => item.total);
 
-      new Chart(competitions, {
+      new Chart(comps_timeline, {
         type: 'line',
         data: {
           labels: dates,
@@ -89,6 +92,7 @@
       });
     </script>
 
+    <!-- IPF Points distribution chart -->
     <script>
         const distribution = document.getElementById('distribution').getContext('2d');
 
@@ -130,5 +134,6 @@
             }
         });
     </script>
+    
   </body>
 </html>

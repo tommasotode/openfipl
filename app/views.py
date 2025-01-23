@@ -2,7 +2,6 @@ from django.shortcuts import render
 
 import app.src.stats as stats
 
-
 def table_view(request):
     table = stats.get_table()
 
@@ -10,11 +9,10 @@ def table_view(request):
 
 
 def athlete_view(request, name):
-    freq, avg_chunk, block = stats.get_ipfgl_distribution()
-
     athlete = stats.get_athlete(name)
-
     pr = stats.get_pr(athlete)
+
+    freq, avg_chunk, block = stats.get_ipfgl_distribution()
     pr_chunk = block * round(pr / block)
 
     best_lift = ('deadlift', 'bench')
