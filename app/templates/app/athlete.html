@@ -11,7 +11,7 @@
   <body class="bg-gray-100 p-6">
     <div class="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-6">
 
-      <!-- Athlete Competitions list -->
+      <!-- Competitions list -->
       <h1 class="text-3xl font-bold text-center mb-6">{{ athlete_comps.0.Name }}</h1>
       <ul class="mb-6">
         {% for comp in athlete_comps %}
@@ -54,18 +54,12 @@
     <script>
       const comps_timeline = document.getElementById('comps_timeline').getContext('2d');
 
-      const labels = [];
-      const data = [];
+      const dates = [];
+      const totals = [];
       {% for comp in athlete_comps %}
-        labels.push(new Date("{{ comp.Date }}"));
-        data.push({{ comp.TotalKg }});
+        dates.push(new Date("{{ comp.Date }}"));
+        totals.push({{ comp.TotalKg }});
       {% endfor %}
-
-      let pair = labels.map((date, index) => {
-        return { date: date, total: data[index] };
-      });
-      let dates = pair.map(item => item.date.toISOString().slice(0,10));
-      let totals = pair.map(item => item.total);
 
       new Chart(comps_timeline, {
         type: 'line',

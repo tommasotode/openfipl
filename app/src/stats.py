@@ -60,7 +60,7 @@ def get_best_lift(name):
 
 
 @benchmark
-def get_ipfgl_distribution(block=1):
+def get_distribution_ipfgl(block=1):
     prs = (
         Performance.objects.filter(Event="SBD", Equipment="Raw")
         .values("Name")
@@ -69,7 +69,7 @@ def get_ipfgl_distribution(block=1):
 
     best = sorted(p["best"] for p in prs if p["best"] > 0)
     avg = sum(best) / len(best) if best else 0
-    
+
     freq = Counter(block * (p // block) for p in best)
     avg_chunk = block * round(avg / block)
 
@@ -78,12 +78,41 @@ def get_ipfgl_distribution(block=1):
 
 @benchmark
 def get_athlete(name):
-    athlete = Performance.objects.filter(Name=name, Event="SBD", Equipment="Raw").order_by("Date")
+    athlete = Performance.objects.filter(
+        Name=name, Event="SBD", Equipment="Raw"
+    ).order_by("Date")
     return athlete
 
 
 @benchmark
-def get_pr(athlete):
-    pr = athlete.aggregate(m=Max("IPFGLPoints"))["m"]
+def get_pr_ipfgl(athlete):
+    pr = max(athlete.values_list("IPFGLPoints", flat=True))
     return pr
 
+
+@benchmark
+def get_pr_total(athlete):
+    pr = max(athlete.values_list("TotalKg", flat=True))
+    return pr
+
+
+@benchmark
+def get_pr_squat(athlete):
+    pr = max(athlete.values_list("BestSquatKg", flat=True))
+    return pr
+
+
+@benchmark
+def get_pr_bench(athlete):
+    pr = max(athlete.values_list("BestBenchKg", flat=True))
+    return pr
+
+
+@benchmark
+def get_pr_deadlift(athlete):
+    pr = max(athlete.values_list("BestDeadliftKg", flat=True))
+    return pr
+
+@benchmark
+def get_percentile(athlete):
+    return -1
