@@ -1,11 +1,10 @@
 from app.models import Competition
-from django.shortcuts import render
 from django.db.models import Max
 
 from collections import Counter
 from bisect import bisect_left
 
-from utils import benchmark
+from app.utils import benchmark
 
 
 @benchmark

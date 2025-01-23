@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-import src.stats as stats
+import app.src.stats as stats
 
 
 def table_view(request):
@@ -17,17 +17,18 @@ def athlete_view(request, name):
     pr = stats.get_pr(athlete)
     pr_chunk = block * round(pr / block)
 
-    best_lift = stats.get_best_lift(name)
+    best_lift = ('deadlift', 'bench')
+    # best_lift = stats.get_best_lift(name)
 
     res = {
-        "athlete": athlete,
-        "best": best_lift[0],
-        "worst": best_lift[1],
+        "athlete_comps": athlete,
+        "best_lift": best_lift[0],
+        "worst_lift": best_lift[1],
         "percentile": -1,
-        "dist_points": list(freq.keys()),
-        "dist_freq": list(freq.values()),
-        "dist_avg": avg_chunk,
-        "dist_pr": pr_chunk,
+        "freq_keys": list(freq.keys()),
+        "freq_values": list(freq.values()),
+        "freq_avg": avg_chunk,
+        "freq_pr": pr_chunk,
     }
 
     return render(request, "app/athlete.html", res)

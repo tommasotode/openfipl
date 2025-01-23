@@ -11,10 +11,10 @@
 
   <body class="bg-gray-100 p-6">
     <div class="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-6">
-      <h1 class="text-3xl font-bold text-center mb-6">{{ athlete.0.Name }}</h1>
+      <h1 class="text-3xl font-bold text-center mb-6">{{ athlete_comps.0.Name }}</h1>
 
       <ul class="mb-6">
-        {% for comp in athlete %}
+        {% for comp in athlete_comps %}
           <li class="text-lg p-2 bg-gray-50 mb-2 text-center">
             <span class="font-semibold">{{ comp.Name }}</span> -
             <span>{{ comp.TotalKg }} kg</span> on
@@ -37,8 +37,8 @@
       </div>
 
       <div class="mb-6">
-        <h1 class="text-center">Best lift: {{ best | safe }}</h1>
-        <h1 class="text-center">Worst lift: {{ worst | safe }}</h1>
+        <h1 class="text-center">Best lift: {{ best_lift | safe }}</h1>
+        <h1 class="text-center">Worst lift: {{ worst_lift | safe }}</h1>
       </div>
 
       <div class="text-center mt-6">
@@ -52,7 +52,7 @@
       // TODO: Sort from python
       const labels = [];
       const data = [];
-      {% for comp in athlete %}
+      {% for comp in athlete_comps %}
         labels.push(new Date("{{ comp.Date }}"));
         data.push({{ comp.TotalKg }});
       {% endfor %}
@@ -92,12 +92,12 @@
     <script>
         const distribution = document.getElementById('distribution').getContext('2d');
 
-        const total = {{ dist_points | safe }};
-        const frequency = {{ dist_freq | safe }};
-        const average = {{ dist_avg | safe }};
-        const pr = {{ dist_pr | safe }};
+        const points = {{ freq_keys | safe }};
+        const frequency = {{ freq_values | safe }};
+        const average = {{ freq_avg | safe }};
+        const pr = {{ freq_pr | safe }};
 
-        const bg_colors = total.map((value) => {
+        const bg_colors = points.map((value) => {
           if (value === average) {
               return 'rgba(55, 130, 235, 0.7)';
           } else if (value === pr) {
@@ -106,7 +106,7 @@
               return 'rgba(75, 192, 192, 0.7)';
           } });
 
-        const bord_colors = total.map((value) => {
+        const bord_colors = points.map((value) => {
           if (value === average) {
               return 'rgba(55, 130, 235, 1)';
           } else if (value === pr) {
@@ -118,7 +118,7 @@
         new Chart(distribution, {
             type: 'bar',
             data: {
-                labels: total,
+                labels: points,
                 datasets: [
                 {
                     label: 'Frequency',
