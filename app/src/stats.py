@@ -1,4 +1,4 @@
-from app.models import Competition
+from app.models import Performance
 from django.db.models import Max
 
 from collections import Counter
@@ -10,7 +10,7 @@ from app.utils import benchmark
 @benchmark
 def get_table(rows=1000):
     table = (
-        Competition.objects.filter(Event="SBD", Equipment="Raw", Federation="FIPL")
+        Performance.objects.filter(Event="SBD", Equipment="Raw", Federation="FIPL")
         .values("Name", "Sex", "TotalKg", "IPFGLPoints", "Date")
         .order_by("IPFGLPoints")
         .reverse()
@@ -21,24 +21,24 @@ def get_table(rows=1000):
 
 @benchmark
 def get_best_lift(name):
-    prs = Competition.objects.filter(Name=name, Event="SBD", Equipment="Raw").aggregate(
+    prs = Performance.objects.filter(Name=name, Event="SBD", Equipment="Raw").aggregate(
         s=Max("BestSquatKg"), b=Max("BestBenchKg"), d=Max("BestDeadliftKg")
     )
 
     squat = list(
-        Competition.objects.filter(Event="SBD", Equipment="Raw")
+        Performance.objects.filter(Event="SBD", Equipment="Raw")
         .order_by("BestSquatKg")
         .values_list("BestSquatKg", flat=True)
     )
 
     bench = list(
-        Competition.objects.filter(Event="SBD", Equipment="Raw")
+        Performance.objects.filter(Event="SBD", Equipment="Raw")
         .order_by("-BestBenchKg")
         .values_list("BestBenchKg", flat=True)
     )
 
     deadlift = list(
-        Competition.objects.filter(Event="SBD", Equipment="Raw")
+        Performance.objects.filter(Event="SBD", Equipment="Raw")
         .order_by("BestDeadliftKg")
         .values_list("BestDeadliftKg", flat=True)
     )
@@ -62,7 +62,7 @@ def get_best_lift(name):
 @benchmark
 def get_ipfgl_distribution(block=1):
     prs = (
-        Competition.objects.filter(Event="SBD", Equipment="Raw")
+        Performance.objects.filter(Event="SBD", Equipment="Raw")
         .values("Name")
         .annotate(best=Max("IPFGLPoints"))
     )
@@ -78,7 +78,7 @@ def get_ipfgl_distribution(block=1):
 
 @benchmark
 def get_athlete(name):
-    athlete = Competition.objects.filter(Name=name, Event="SBD", Equipment="Raw")
+    athlete = Performance.objects.filter(Name=name, Event="SBD", Equipment="Raw")
     return athlete
 
 

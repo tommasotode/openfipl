@@ -1,6 +1,6 @@
 from django.db import models
 
-class Competition(models.Model):
+class Performance(models.Model):
     Name = models.CharField(max_length=128)
     Sex = models.CharField(max_length=2)
     Event = models.CharField(max_length=4)

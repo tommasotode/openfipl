@@ -3,7 +3,7 @@ import pandas as pd
 
 from django.core.management.base import BaseCommand
 from django.db import transaction
-from app.models import Competition
+from app.models import Performance
 
 import requests
 import zipfile
@@ -81,7 +81,7 @@ class Command(BaseCommand):
         self.stdout.write(self.style.NOTICE("Reading dataset..."))
         df = pd.read_csv(path)
         instances = [
-            Competition(
+            Performance(
                 Name=get_name(row["Name"]),
                 Sex=row["Sex"],
                 Event=row["Event"],
@@ -106,9 +106,9 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.NOTICE("Importing dataset to db.sqlite3..."))
         try:
-            Competition.objects.all().delete()
+            Performance.objects.all().delete()
             with transaction.atomic():
-                Competition.objects.bulk_create(instances, batch_size=1000)
+                Performance.objects.bulk_create(instances, batch_size=1000)
             self.stdout.write(self.style.SUCCESS("Finished :-)"))
 
         except Exception as e:
