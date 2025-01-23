@@ -7,6 +7,10 @@ from bisect import bisect_left
 from app.utils import benchmark
 
 
+# TODO: Use in all queries, based on user choice:
+filters = {"Event": "SBD", "Equipment": "Raw"}
+
+
 @benchmark
 def get_table(rows=1000):
     table = (
@@ -60,16 +64,16 @@ def get_best_lift(name):
 
 
 @benchmark
-def get_distribution_ipfgl(block=1):
-    prs = (
-        Performance.objects.filter(Event="SBD", Equipment="Raw")
-        .values("Name")
-        .annotate(best=Max("IPFGLPoints"))
-    )
+def get_distribution_ipfgl(block=1, based_on_prs=True):
+    if based_on_prs:
+        best = get_everyone_prs()
+    else:
+        points = Performance.objects.filter(Event="SBD", Equipment="Raw").values_list(
+            "IPFGLPoints"
+        )
+        best = sorted(p for p in points if p > 0)
 
-    best = sorted(p["best"] for p in prs if p["best"] > 0)
     avg = sum(best) / len(best) if best else 0
-
     freq = Counter(block * (p // block) for p in best)
     avg_chunk = block * round(avg / block)
 
@@ -113,6 +117,31 @@ def get_pr_deadlift(athlete):
     pr = max(athlete.values_list("BestDeadliftKg", flat=True))
     return pr
 
+
+# TODO: maybe it's better to sort from the db,
+# but testing it says the opposite, why?
+@benchmark
+def get_everyone_prs(nonzero=True):
+    prs = (
+        Performance.objects.filter(Event="SBD", Equipment="Raw")
+        .values("Name")
+        .annotate(best=Max("IPFGLPoints"))
+    )
+
+    if nonzero:
+        best = sorted(p["best"] for p in prs if p["best"] > 0)
+    else:
+        best = sorted(p["best"] for p in prs)
+
+    return best
+
+
 @benchmark
 def get_percentile(athlete):
-    return -1
+    pr = get_pr_ipfgl(athlete)
+    prs = get_everyone_prs()
+
+    rank = len(prs) - bisect_left(prs, pr)
+    percentile = (rank / len(prs)) * 100  # better than x% of athletes
+
+    return percentile

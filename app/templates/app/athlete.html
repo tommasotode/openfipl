@@ -57,7 +57,7 @@
       const dates = [];
       const totals = [];
       {% for comp in athlete_comps %}
-        dates.push(new Date("{{ comp.Date }}"));
+        dates.push('{{ comp.Date }}');
         totals.push({{ comp.TotalKg }});
       {% endfor %}
 
