@@ -15,20 +15,21 @@
         <div>
           <label for="age_class" class="block text-sm font-medium text-gray-700">Age Class</label>
           <select id="age_class" name="age_class" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-            <option value="none">Select Age Class</option>
-            <option value="subjr">SubJunior</option>
-            <option value="jr">Junior</option>
-            <option value="senior">Senior</option>
-            <option value="master1">Master 1</option>
-            <option value="master2">Master 2</option>
-            <option value="master3">Master 3</option>
-            <option value="master4">Master 4</option>
+            <option value="">Select Age Class</option>
+            <option value="Open">Open</option>
+            <option value="Sub-Junior">SubJunior</option>
+            <option value="Junior">Junior</option>
+            <option value="Senior">Senior</option>
+            <option value="Master I">Master 1</option>
+            <option value="Master II">Master 2</option>
+            <option value="Master III">Master 3</option>
+            <option value="Master IV">Master 4</option>
           </select>
         </div>
         <div>
           <label for="weight_class" class="block text-sm font-medium text-gray-700">Weight Class</label>
           <select id="weight_class" name="weight_class" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-            <option value="none">Select Weight Class</option>
+            <option value="">Select Weight Class</option>
             <option value="59">-59</option>
             <option value="66">-66</option>
             <option value="74">-74</option>
@@ -36,16 +37,16 @@
             <option value="93">-93</option>
             <option value="105">-105</option>
             <option value="120">-120</option>
-            <option value="120p">120+</option>
+            <option value="120+">120+</option>
           </select>
         </div>
         <div>
           <label for="event_type" class="block text-sm font-medium text-gray-700">Event Type</label>
           <select id="event_type" name="event_type" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-            <option value="none">Select Event Type</option>
-            <option value="sbd">SBD</option>
-            <option value="bench">Bench</option>
-            <option value="deadlift">Deadlift</option>
+            <option value="">Select Event Type</option>
+            <option value="SBD">SBD</option>
+            <option value="B">Bench</option>
+            <option value="D">Deadlift</option>
           </select>
         </div>
       </div>
@@ -61,6 +62,7 @@
         <thead>
           <tr class="bg-gray-200 text-gray-700 font-bold text-sm">
             <th class="p-3 text-left">Name</th>
+            <th class="p-3 text-left">Total (Kg)</th>
             <th class="p-3 text-left">IPF GL Points</th>
           </tr>
         </thead>
@@ -68,6 +70,7 @@
           {% for athlete in ranking %}
             <tr class="hover:bg-gray-50">
               <td class="p-3 text-gray-500">{{ athlete.Name }}</td>
+              <td class="p-3 text-gray-500">{{ athlete.TotalKg }}</td>
               <td class="p-3 text-gray-500">{{ athlete.IPFGLPoints }}</td>
             </tr>
           {% endfor %}

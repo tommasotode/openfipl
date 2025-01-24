@@ -58,6 +58,7 @@ class Command(BaseCommand):
         with zipfile.ZipFile(tmp_path, "r") as z:
             z.extractall(directory)
 
+        new = ""
         os.remove(tmp_path)
         for root, _, files in os.walk(directory):
             for file in files:

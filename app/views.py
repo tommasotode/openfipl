@@ -35,6 +35,20 @@ def athlete_view(request, name):
 
 
 def rankings_view(request):
-    r = rankings.get_ranking()
+    age_class = request.GET.get('age_class', None)
+    weight_class = request.GET.get('weight_class', None)
+    event = request.GET.get('event_type', None)
+
+    filters = {
+        "Division": age_class,
+        "WeightClassKg": weight_class,
+        "Event": event,
+    }
+
+    filters = {key: value for key, value in filters.items() if value}
+
+
+    r = rankings.get_ranking(filters)
+
 
     return render(request, "app/rankings.html", {"ranking": r})
