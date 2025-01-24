@@ -1,6 +1,7 @@
 from django.shortcuts import render
 
 import app.src.stats as stats
+import app.src.rankings as rankings
 
 def table_view(request):
     table = stats.get_table()
@@ -31,3 +32,9 @@ def athlete_view(request, name):
     }
 
     return render(request, "app/athlete.html", res)
+
+
+def rankings_view(request):
+    r = rankings.get_ranking()
+
+    return render(request, "app/rankings.html", {"ranking": r})

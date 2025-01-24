@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Rankings</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  
+  <body class="bg-gray-100 p-4">
+  <div class="container mx-auto p-4">
+    <h1 class="text-2xl font-bold mb-4">Rankings</h1>
+    <form method="GET" class="mb-4">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label for="age_class" class="block text-sm font-medium text-gray-700">Age Class</label>
+          <select id="age_class" name="age_class" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            <option value="none">Select Age Class</option>
+            <option value="subjr">SubJunior</option>
+            <option value="jr">Junior</option>
+            <option value="senior">Senior</option>
+            <option value="master1">Master 1</option>
+            <option value="master2">Master 2</option>
+            <option value="master3">Master 3</option>
+            <option value="master4">Master 4</option>
+          </select>
+        </div>
+        <div>
+          <label for="weight_class" class="block text-sm font-medium text-gray-700">Weight Class</label>
+          <select id="weight_class" name="weight_class" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            <option value="none">Select Weight Class</option>
+            <option value="59">-59</option>
+            <option value="66">-66</option>
+            <option value="74">-74</option>
+            <option value="83">-83</option>
+            <option value="93">-93</option>
+            <option value="105">-105</option>
+            <option value="120">-120</option>
+            <option value="120p">120+</option>
+          </select>
+        </div>
+        <div>
+          <label for="event_type" class="block text-sm font-medium text-gray-700">Event Type</label>
+          <select id="event_type" name="event_type" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            <option value="none">Select Event Type</option>
+            <option value="sbd">SBD</option>
+            <option value="bench">Bench</option>
+            <option value="deadlift">Deadlift</option>
+          </select>
+        </div>
+      </div>
+      <div class="mt-4">
+        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          Filter
+        </button>
+      </div>
+    </form>
+    <div>
+      <h2 class="text-xl font-semibold mb-2">Top athletes</h2>
+      <table class="table w-full bg-white rounded-lg shadow-md border border-gray-200">
+        <thead>
+          <tr class="bg-gray-200 text-gray-700 font-bold text-sm">
+            <th class="p-3 text-left">Name</th>
+            <th class="p-3 text-left">IPF GL Points</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for athlete in ranking %}
+            <tr class="hover:bg-gray-50">
+              <td class="p-3 text-gray-500">{{ athlete.Name }}</td>
+              <td class="p-3 text-gray-500">{{ athlete.IPFGLPoints }}</td>
+            </tr>
+          {% endfor %}
+      </table>
+
+    </div>
+  </div>
+  </body>
+
+</html>
