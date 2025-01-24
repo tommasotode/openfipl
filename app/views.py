@@ -11,12 +11,13 @@ def table_view(request):
 def athlete_view(request, name):
     athlete = stats.get_athlete(name)
     pr = stats.get_pr_ipfgl(athlete)
+    prs = stats.get_everyone_prs()
 
-    freq, avg_chunk, block = stats.get_distribution_ipfgl()
+    freq, avg_chunk, block = stats.get_distribution_ipfgl(prs=prs)
     pr_chunk = block * round(pr / block)
 
     best_lift = ('deadlift', 'bench')
-    percentile = stats.get_percentile(athlete)
+    percentile = stats.get_percentile(athlete, pr, prs)
     # best_lift = stats.get_best_lift(name)
 
     res = {

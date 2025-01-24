@@ -2,7 +2,7 @@ from app.models import Performance
 from django.db.models import Max
 
 from collections import Counter
-from bisect import bisect_left
+from bisect import bisect_right
 
 from app.utils import benchmark
 
@@ -64,9 +64,12 @@ def get_best_lift(name):
 
 
 @benchmark
-def get_distribution_ipfgl(block=1, based_on_prs=True):
+def get_distribution_ipfgl(block=1, based_on_prs=True, prs=None):
     if based_on_prs:
-        best = get_everyone_prs()
+        if not prs:
+            best = get_everyone_prs()
+        else:
+            best = prs
     else:
         points = Performance.objects.filter(Event="SBD", Equipment="Raw").values_list(
             "IPFGLPoints"
@@ -127,7 +130,6 @@ def get_everyone_prs(nonzero=True):
         .values("Name")
         .annotate(best=Max("IPFGLPoints"))
     )
-
     if nonzero:
         best = sorted(p["best"] for p in prs if p["best"] > 0)
     else:
@@ -137,11 +139,15 @@ def get_everyone_prs(nonzero=True):
 
 
 @benchmark
-def get_percentile(athlete):
-    pr = get_pr_ipfgl(athlete)
-    prs = get_everyone_prs()
+def get_percentile(athlete, pr=None, prs=None):
+    if not pr:
+        pr = get_pr_ipfgl(athlete)
+    if not prs:
+        prs = get_everyone_prs()
 
-    rank = len(prs) - bisect_left(prs, pr)
-    percentile = (rank / len(prs)) * 100  # better than x% of athletes
+    rank = len(prs) - bisect_right(prs, pr)
+    percentile = 100 - (
+        (rank / len(prs) if prs else -1) * 100
+    )  # better than x% of athletes
 
     return percentile
