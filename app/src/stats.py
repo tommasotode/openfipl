@@ -23,44 +23,21 @@ def get_table(rows=1000):
     return table
 
 
+# TODO: maybe it's better to sort from the db,
+# but testing it says the opposite, why?
 @benchmark
-def get_best_lift(name):
-    prs = Performance.objects.filter(Name=name, Event="SBD", Equipment="Raw").aggregate(
-        s=Max("BestSquatKg"), b=Max("BestBenchKg"), d=Max("BestDeadliftKg")
-    )
-
-    squat = list(
+def get_everyone_prs(nonzero=True):
+    prs = (
         Performance.objects.filter(Event="SBD", Equipment="Raw")
-        .order_by("BestSquatKg")
-        .values_list("BestSquatKg", flat=True)
+        .values("Name")
+        .annotate(best=Max("IPFGLPoints"))
     )
+    if nonzero:
+        best = sorted(p["best"] for p in prs if p["best"] > 0)
+    else:
+        best = sorted(p["best"] for p in prs)
 
-    bench = list(
-        Performance.objects.filter(Event="SBD", Equipment="Raw")
-        .order_by("-BestBenchKg")
-        .values_list("BestBenchKg", flat=True)
-    )
-
-    deadlift = list(
-        Performance.objects.filter(Event="SBD", Equipment="Raw")
-        .order_by("BestDeadliftKg")
-        .values_list("BestDeadliftKg", flat=True)
-    )
-
-    srank = len(squat) - bisect_left(squat, prs["s"])
-    brank = len(bench) - bisect_left(bench, prs["b"])
-    drank = len(deadlift) - bisect_left(deadlift, prs["d"])
-
-    high = {
-        (srank / len(squat)): "squat",
-        (brank / len(bench)): "bench",
-        (drank / len(deadlift)): "deadlift",
-    }
-
-    best = high[min(high.keys())]
-    worst = high[max(high.keys())]
-
-    return (best, worst)
+    return best
 
 
 @benchmark
@@ -121,21 +98,12 @@ def get_pr_deadlift(athlete):
     return pr
 
 
-# TODO: maybe it's better to sort from the db,
-# but testing it says the opposite, why?
 @benchmark
-def get_everyone_prs(nonzero=True):
-    prs = (
-        Performance.objects.filter(Event="SBD", Equipment="Raw")
-        .values("Name")
-        .annotate(best=Max("IPFGLPoints"))
-    )
-    if nonzero:
-        best = sorted(p["best"] for p in prs if p["best"] > 0)
-    else:
-        best = sorted(p["best"] for p in prs)
+def get_best_worst_lift(athlete):
+    best = "fix"
+    worst = "fix"
 
-    return best
+    return (best, worst)
 
 
 @benchmark

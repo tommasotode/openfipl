@@ -16,9 +16,8 @@ def athlete_view(request, name):
     freq, avg_chunk, block = stats.get_distribution_ipfgl(prs=prs)
     pr_chunk = block * round(pr / block)
 
-    best_lift = ('deadlift', 'bench')
     percentile = stats.get_percentile(athlete, pr, prs)
-    # best_lift = stats.get_best_lift(name)
+    best_lift = stats.get_best_worst_lift(name)
 
     res = {
         "athlete_comps": athlete,
